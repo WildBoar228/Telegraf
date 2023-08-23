@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form action="" method="post">
+    <h1 style="font-size: 14px; margin-top: 10px;">{{title}}</h1>
+
+    {% if user.id == 1 %}
+    <p style="color: #2b8b4b; font-size: 24px;"><i class="fa fa-check"></i>  It's official page of Telegraf.</p>
+    {% endif %}
+
+    <label style="font-size: 30px; color: #5353d7"><span class="fa fa-user" style="margin-right: 10px"></span>{{ user.username }}    </label>
+    {% if user.is_verified %}
+    <span style="color: #2b8b4b; font-size: 30px" class="fa fa-check"></span>
+    {% endif %}
+
+    {% if user.is_blocked %}
+    <label style="font-size: 30px; color: #ff0000">    (blocked)</label>
+    {% endif %}
+
+    {% if current_user.is_authenticated and user == current_user %}
+    <label style="font-size: 30px; color: #2b8b4b; margin-left: 20px">(You)</label>
+    {% endif %}
+    <p style="font-size: 14px; color: #9f9f9f">Last online {{user.last_online.strftime('%d/%m/%Y %H:%M')}}</p>
+    <p style="font-size: 18px; color: #9292d1">{{ user.descript }}</p>
+
+    {% if current_user.is_authenticated and user != current_user %}
+    <div>
+        {% if current_user not in friends and not is_his_request and not is_our_request %}
+        <a href="/friendship_request/{{user.id}}" class="btn btn-primary" style="background-color: #5353d7">Offer friendship</a>
+        {% elif is_our_request %}
+        <p style="font-size: 20px; color: #9f9f9f">You already have sent a friendship request. Wait for answer</p>
+        {% elif is_his_request %}
+        <p style="font-size: 20px">This user have sent you a friendship request with that text:</p>
+        <p style="font-size: 20px; color: #808080; word-wrap: break-word; margin-left: 20px; margin-right: 20px;">{{request.text}}</p>
+        <input type="submit" name="accept-request" class="btn btn-primary" style="font-size: 18px; background-color: #5353d7" value="accept">
+        <input type="submit" name="reject-request" class="btn btn-primary" style="font-size: 18px; background-color: #5353d7" value="reject">
+        {% else %}
+        <p style="font-size: 20px; color: #9f9f9f">This user is already your friend</p>
+        {% endif %}
+
+        {% if current_user in friends or user.free_chat %}
+        <a href="/chat/{{user.id}}" class="btn btn-secondary" style="background-color: #9292d1">Send message</a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <p style="font-size: 25px; color: #5353d7; margin-top: 20px">Extra info:</p>
+
+    <label style="font-size: 20px; color: #5353d7">Birth date:</label>
+    <label style="font-size: 18px; color: #9292d1; margin-left: 5px;">{{ user.bdate }}</label>
+
+    <p style="font-size: 20px; color: #5353d7">Friends:</p>
+    {% for friend in friends %}
+    <div>
+        <a href="/profile/{{friend.id}}" style="font-size: 18px; margin-left: 15px;">{{friend.username}}</a>
+    </div>
+    {% endfor %}
+
+    {% if friends == [] %}
+    {% if user == current_user %}
+    <p style="font-size: 20px; color: #9f9f9f">You don't have any friends yet.</p>
+    {% else %}
+    <p style="font-size: 20px; color: #9f9f9f">This user doesn't have any friends yet.</p>
+    <p style="font-size: 20px; color: #9f9f9f">(He must feel himself alone, offer him your friendship!)</p>
+    {% endif %}
+    {% endif %}
+
+    <label style="font-size: 20px; color: #5353d7">City:</label>
+    <label style="font-size: 18px; color: #9292d1; margin-left: 5px;">{{ user.city }}</label>
+    <p></p>
+    <label style="font-size: 20px; color: #5353d7">Email:</label>
+    <label style="font-size: 18px; color: #9292d1; margin-left: 5px;">{{ user.email }}</label>
+
+
+    <div>{{ message }}</div>
+</form>
+{% endblock %}
