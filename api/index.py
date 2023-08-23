@@ -15,9 +15,10 @@ from data.edit_profile_form import EditProfileForm
 
 import datetime
 import os
+import os.path
 import platform
 
-app = Flask(__name__, template_folder='static/templates')
+app = Flask(__name__, template_folder=os.path.join('static', 'templates'))
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 login_manager = LoginManager()
@@ -80,7 +81,7 @@ def login():
                                message="Неправильный логин или пароль. Возможно, вы ещё не зарегистрированы.",
                                form=form)
 
-    int(', '.join(os.listdir()))
+    #int(', '.join(os.listdir('static/templates')))
 
     return render_template('login.html', is_mobile=is_mobile, title='Авторизация', form=form)
 
